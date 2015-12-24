@@ -1,4 +1,4 @@
-# edi cam bot
+# Edison Camera Bot
 
 edi-cam demonstrates live video streaming on Intel Edison using Node.js and WebSockets. Audio is not supported at the moment. See the demo in action [here](http://youtu.be/nVDL2-bFT3Y).
 
