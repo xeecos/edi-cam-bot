@@ -21,4 +21,4 @@ tar -xf ~/bin/$FNAME -C ~/bin
 
 echo "Cleaning up..."
 rm ~/bin/$FNAME
-mv /home/root/bin/ffmpeg*/ /home/root/bin/ffmpeg
+mv ~/bin/ffmpeg*/ ~/bin/ffmpeg
