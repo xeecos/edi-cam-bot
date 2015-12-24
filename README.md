@@ -1,4 +1,4 @@
-# edi-cam
+# Edison Camera Bot
 
 edi-cam demonstrates live video streaming on Intel Edison using Node.js and WebSockets. Audio is not supported at the moment. See the demo in action [here](http://youtu.be/nVDL2-bFT3Y).
 
@@ -108,19 +108,8 @@ If the download doesn't work, the release link may have changed. Check [here](ht
 
 #### Installing Node.js packages
 
-* Navigate to `web/robotjs`.
-* Install the Node.js packages by typing `npm install`.
-
-### Running the demo
-
-#### Updating the WebSocket address
-
-Modify `wsUrl` in `web/robotjs/client/index.html`. The section of the code looks like this:
-
-    // CHANGE THIS TO THE APPROPRIATE WS ADDRESS
-    var wsUrl = 'ws://myedison.local:8084/';
-
-Replace `myedison` with the name of your Edison.
+* Navigate to `web`
+* Install the Node.js packages by typing `npm install`
 
 #### Running the Node.js server
 
@@ -152,8 +141,8 @@ For example I will use openautomation service, please rename your file according
     Description=Open Automation Service
     After=network.service
     [Service]
-    ExecStart=/bin/sh -c "/usr/bin/node /home/root/edi-cam/web/robotjs/server.js"
-    WorkingDirectory=/home/root/edi-cam/web/robotjs/node_modules/
+    ExecStart=/bin/sh -c "/usr/bin/node /home/root/edi-cam-bot/web/server.js"
+    WorkingDirectory=/home/root/edi-cam-bot/web/node_modules/
     Restart=always
     RestartSec=5s
     [Install]
@@ -161,7 +150,7 @@ For example I will use openautomation service, please rename your file according
 
 #### Set executable rights to everyone:
 
-    chmod 777 /etc/systemd/system/edi-cam.service
+    chmod 777 /etc/systemd/system/edi-cam-bot.service
 
 #### Reload systemctl daemon:
 
@@ -169,13 +158,13 @@ For example I will use openautomation service, please rename your file according
 
 #### Start your service:
 
-    systemctl start edi-cam.service
+    systemctl start edi-cam-bot.service
 
 #### Check service status:
 
     systemctl status
-    systemctl status edi-cam.service
+    systemctl status edi-cam-bot.service
 
 #### Enable service autostart feature:
 
-    systemctl enable edi-cam.service
+    systemctl enable edi-cam-bot.service

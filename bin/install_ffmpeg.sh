@@ -14,7 +14,7 @@ echo "Removing old versions of ffmpeg..."
 rm -rf ~/bin/ffmpeg*
 
 echo "Downloading ffmpeg..."
-wget -P ~/bin http://yeakong.com/ffmpeg/releases/$FNAME
+wget -P ~/bin http://johnvansickle.com/ffmpeg/releases/$FNAME
 
 echo "Unpacking..."
 tar -xf ~/bin/$FNAME -C ~/bin
