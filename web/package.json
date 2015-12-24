@@ -1,0 +1,13 @@
+{
+  "name": "edi-cam-bot",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.10.1",
+    "morgan": "1.4.1",
+    "ws": "0.4.32",
+    "galileo-io":"0.7.0"
+  }
+}

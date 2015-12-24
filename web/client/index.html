@@ -1,0 +1,161 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="codebase/dhtmlxslider.css"/>
+
+<script src="codebase/dhtmlxslider.js"></script>
+
+<style type="text/css" id="buttonStyles">
+.robotButton {
+	-moz-box-shadow:inset 0px -3px 7px 0px #29bbff;
+	-webkit-box-shadow:inset 0px -3px 7px 0px #29bbff;
+	box-shadow:inset 0px -3px 7px 0px #29bbff;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #2dabf9), color-stop(1, #0688fa));
+	background:-moz-linear-gradient(top, #2dabf9 5%, #0688fa 100%);
+	background:-webkit-linear-gradient(top, #2dabf9 5%, #0688fa 100%);
+	background:-o-linear-gradient(top, #2dabf9 5%, #0688fa 100%);
+	background:-ms-linear-gradient(top, #2dabf9 5%, #0688fa 100%);
+	background:linear-gradient(to bottom, #2dabf9 5%, #0688fa 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#2dabf9', endColorstr='#0688fa',GradientType=0);
+	background-color:#2dabf9;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	border:1px solid #0b0e07;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	padding:42px 16px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #263666;
+}
+.robotButton:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #0688fa), color-stop(1, #2dabf9));
+	background:-moz-linear-gradient(top, #0688fa 5%, #2dabf9 100%);
+	background:-webkit-linear-gradient(top, #0688fa 5%, #2dabf9 100%);
+	background:-o-linear-gradient(top, #0688fa 5%, #2dabf9 100%);
+	background:-ms-linear-gradient(top, #0688fa 5%, #2dabf9 100%);
+	background:linear-gradient(to bottom, #0688fa 5%, #2dabf9 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#0688fa', endColorstr='#2dabf9',GradientType=0);
+	background-color:#0688fa;
+}
+.robotButton:active {
+	position:relative;
+	top:1px;
+}
+body { 
+	text-align: center;
+	margin:30px 0;
+	-webkit-user-select: none;
+	-webkit-touch-callout:none;
+}
+#center { 
+	margin:0 auto; 
+}
+</style>
+	
+<style>
+		#sliderObj {
+			width: 360px;
+			height: 30px;
+		}
+	</style>
+	<script>
+		var mySlider, i=0;
+		function doOnLoad(){
+			mySlider = new dhtmlXSlider("sliderObj");
+			mySlider.attachEvent("onChange", function(value){
+				runAngle({
+					eventNme: "onChange",
+					arg: value
+				});
+			});
+			
+			mySlider.attachEvent("onSlideEnd", function(value){
+				runAngle({
+					eventNme: "onSlideEnd",
+					arg: value
+				});
+			});
+		};
+		
+		function doOnUnload(){
+			if (mySlider != null){
+				mySlider.unload();
+				mySlider = null;
+			}
+		};
+		function sendAction(action,data){
+		
+			var xhr = new XMLHttpRequest();
+			xhr.open("post","/post?"+action+"="+data);
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState === 4 && xhr.status === 200) {
+				}
+			}
+    		xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded')
+			xhr.send();
+		}
+		function runAngle(data) {
+			sendAction("angle",data.arg);
+		};
+		function resetStream(){
+			sendAction("reset",0);
+		}
+		function pressRobot(index){
+			sendAction("press",index);
+		};
+		function releaseRobot(index){
+			sendAction("release",index);
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+<div id="center" style="width:900px;">
+	<div id="center" style="width:640px;height:480px;border:1px solid #ccc">
+		<canvas id="canvas-video" width="640" height="480"></canvas>
+	</div>
+	<script src="/jsmpg.js"></script>
+	<script type="text/javascript">
+		// CHANGE THIS TO THE APPROPRIATE WS ADDRESS
+		var domain = window.location.href.split("//")[1].split(":")[0];
+		var wsUrl = 'ws://'+domain+':8084/';
+
+		// Show loading notice
+		var canvas = document.getElementById('canvas-video');
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#333';
+		ctx.fillText('Loading...', canvas.width/2-30, canvas.height/3);
+
+		// Start the player
+		var client = new WebSocket(wsUrl);
+		var player = new jsmpeg(client, { canvas:canvas });
+		document.getElementById("center").addEventListener('touchend', function(event) {
+    releaseRobot(0);
+}, false);
+	</script>
+	<div id="center">
+		<div style="float:left;display:block;">
+			<div style="display:block;margin:10px 0;">
+				<a role="button"  ontouchstart="pressRobot(0);" onmouseup="releaseRobot(0);" class="robotButton">&nbsp;Forward&nbsp;</a>
+			</div>
+			<div style="display:block;">
+				<a role="button"  ontouchstart="pressRobot(1);" onmouseup="releaseRobot(1);" class="robotButton">Backward</a>
+			</div>
+		</div>		
+		<div style="float:left;width:450px;height:80px"><div id="sliderObj" style="margin:100px 0 0 100px;"></div>
+		</div>
+		<div style="float:left;display:none;width:150px;height:80px;"><a role="button" onclick="resetStream();" class="robotButton">Reset</a></div>
+		<div style="float:left;display:block;margin:0 0px 0 80px;">
+			<div style="float:left;display:block;margin:60px 20px 0 0;">
+				<a role="button"  ontouchstart="pressRobot(2);" onmouseup="releaseRobot(2);" class="robotButton">&nbsp;Turn Left&nbsp;</a>
+			</div>
+			<div style="float:left;display:block;margin:60px 0;">
+				<a role="button" ontouchstart="pressRobot(3);" onmouseup="releaseRobot(3);" class="robotButton">Turn Right</a>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
