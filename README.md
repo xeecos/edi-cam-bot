@@ -137,14 +137,14 @@ Check folder /etc/systemd/system:
     
 there are few System Service Manager configuration files with .services extension
 
-For example I will use openautomation service, please rename your file accordingly. Create a service config file /etc/systemd/system/edi-cam.service with structure like this:
+For example I will use openautomation service, please rename your file accordingly. Create a service config file /etc/systemd/system/edi-cam-bot.service with structure like this:
 
     [Unit]
     Description=Open Automation Service
     After=network.service
     [Service]
-    ExecStart=/bin/sh -c "/usr/bin/node /home/root/edi-cam-bot/web/server.js"
-    WorkingDirectory=/home/root/edi-cam-bot/web/node_modules/
+    ExecStart=/bin/sh -c "/usr/bin/node ~/edi-cam-bot/web/server.js"
+    WorkingDirectory=~/edi-cam-bot/web/node_modules/
     Restart=always
     RestartSec=5s
     [Install]
