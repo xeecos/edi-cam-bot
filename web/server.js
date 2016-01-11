@@ -53,23 +53,8 @@ app.post('/post', function (req, res) {
     doStop();
   }
   if(req.query.press!=undefined){
-    switch(req.query.press){
-      case "0":{
-        forward();
-      }
-      break;
-      case "1":{
-        backward();
-      }
-      break;
-      case "2":{
-        turnleft();
-      }
-      break;
-      case "3":{
-        turnright();
-      }
-      break;
+    if(req.query.press>=0&&req.query.press<=3){
+      runSpeed(req.query.leftspeed,req.query.rightspeed);
     }
   }
   if(req.query.angle!=undefined){
