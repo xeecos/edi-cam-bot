@@ -104,7 +104,17 @@ body {
 			sendAction("reset",0);
 		}
 		function pressRobot(index){
-			sendAction("press",index);
+			var data = "";
+			if(index==0){
+				data = "0&rightspeed=-100&leftspeed=-100";
+			}else if(index==1){
+				data = "0&rightspeed=-150&leftspeed=150";
+			}else if(index==2){
+				data = "0&rightspeed=150&leftspeed=-150";
+			}else if(index==3){
+				data = "0&rightspeed=100&leftspeed=100";
+			}
+			sendAction("press",data);
 		};
 		function releaseRobot(index){
 			sendAction("release",index);
