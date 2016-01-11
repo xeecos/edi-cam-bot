@@ -119,6 +119,14 @@ body {
 		function releaseRobot(index){
 			sendAction("release",index);
 		};
+		document.onkeydown=function(evt){
+			var oe = evt||event;
+			var c = oe.keyCode;
+			pressRobot(c==38?0:(c==40?3:(c==37?1:2)));
+		}
+		document.onkeyup=function(evt){
+			releaseRobot(0);
+		}
 	</script>
 </head>
 <body onload="doOnLoad();" onunload="doOnUnload();">
