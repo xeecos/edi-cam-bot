@@ -122,7 +122,8 @@ body {
 		document.onkeydown=function(evt){
 			var oe = evt||event;
 			var c = oe.keyCode;
-			pressRobot(c==38?0:(c==40?3:(c==37?1:2)));
+			if(c<41&&c>36)
+				pressRobot(c==38?0:(c==40?3:(c==39?1:2)));
 		}
 		document.onkeyup=function(evt){
 			releaseRobot(0);
