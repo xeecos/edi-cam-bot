@@ -109,7 +109,7 @@ wsServer.broadcast = function(data, opts) {
   }
 };
 function resetStream(){
-  childProcess.exec('../bin/do_ffmpeg.sh');
+  childProcess.exec('~/edi-cam-bot/bin/do_ffmpeg.sh');
 };
 // HTTP server to accept incoming MPEG1 stream
 http.createServer(function (req, res) {
@@ -125,7 +125,7 @@ http.createServer(function (req, res) {
   console.log('Listening for video stream on port ' + configServer.streamPort);
 
   // Run do_ffmpeg.sh from node                                                   
-  childProcess.exec('../bin/do_ffmpeg.sh');
+  childProcess.exec('~/edi-cam-bot/bin/do_ffmpeg.sh');
 });
 
 module.exports.app = app;
