@@ -108,11 +108,11 @@ body {
 			if(index==0){
 				data = "0&rightspeed=-100&leftspeed=-100";
 			}else if(index==1){
-				data = "0&rightspeed=150&leftspeed=-150";
+				data = "1&rightspeed=150&leftspeed=-150";
 			}else if(index==2){
-				data = "0&rightspeed=-150&leftspeed=150";
+				data = "2&rightspeed=-150&leftspeed=150";
 			}else if(index==3){
-				data = "0&rightspeed=100&leftspeed=100";
+				data = "3&rightspeed=100&leftspeed=100";
 			}
 			sendAction("press",data);
 		};
@@ -122,7 +122,7 @@ body {
 		document.onkeydown=function(evt){
 			var oe = evt||event;
 			var c = oe.keyCode;
-			if(c<41&&c>36)
+			if(c>36&&c<41)
 				pressRobot(c==38?0:(c==40?3:(c==39?1:2)));
 		}
 		document.onkeyup=function(evt){
@@ -157,21 +157,21 @@ body {
 	<div id="center">
 		<div style="float:left;display:block;">
 			<div style="display:block;margin:10px 0;">
-				<a role="button"  ontouchstart="pressRobot(0);" onmouseup="releaseRobot(0);" class="robotButton">&nbsp;Forward&nbsp;</a>
+				<a role="button"  ontouchstart="pressRobot(0);" onmousedown="pressRobot(0);" onmouseup="releaseRobot(0);" class="robotButton">&nbsp;Forward&nbsp;</a>
 			</div>
 			<div style="display:block;">
-				<a role="button"  ontouchstart="pressRobot(1);" onmouseup="releaseRobot(1);" class="robotButton">Backward</a>
+				<a role="button"  ontouchstart="pressRobot(3);" onmousedown="pressRobot(3);" onmouseup="releaseRobot(0);" class="robotButton">Backward</a>
 			</div>
 		</div>		
-		<div style="float:left;width:450px;height:80px"><div id="sliderObj" style="margin:100px 0 0 100px;"></div>
+		<div style="float:left;width:100px;height:80px"><div id="sliderObj" style="margin:100px 0 0 100px;"></div>
 		</div>
-		<div style="float:left;display:block;width:320px;height:80px;"><a href="#" onclick="resetStream();" >Reset Robot</a></div>
+		<div style="float:left;display:block;width:320px;height:80px;"><a href="#" onclick="resetStream();" class="">Reset Robot</a></div>
 		<div style="float:left;display:block;margin:0 0px 0 80px;">
 			<div style="float:left;display:block;margin:60px 20px 0 0;">
-				<a role="button"  ontouchstart="pressRobot(2);" onmouseup="releaseRobot(2);" class="robotButton">&nbsp;Turn Left&nbsp;</a>
+				<a role="button"  ontouchstart="pressRobot(2);" onmousedown="pressRobot(2);" onmouseup="releaseRobot(0);" class="robotButton">&nbsp;Turn Left&nbsp;</a>
 			</div>
 			<div style="float:left;display:block;margin:60px 0;">
-				<a role="button" ontouchstart="pressRobot(3);" onmouseup="releaseRobot(3);" class="robotButton">Turn Right</a>
+				<a role="button" ontouchstart="pressRobot(1);" onmousedown="pressRobot(1);" onmouseup="releaseRobot(0);" class="robotButton">Turn Right</a>
 			</div>
 		</div>
 	</div>
