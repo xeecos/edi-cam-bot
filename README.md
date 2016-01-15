@@ -115,7 +115,6 @@ If the download doesn't work, the release link may have changed. Check [here](ht
 
 #### Running the Node.js server
 
-* Navigate to `web/robotjs`.
 * Run the server by typing `node server.js`.
 
 The Node.js server should now be running. The console will look something like this:
