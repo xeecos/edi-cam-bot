@@ -7,23 +7,24 @@ var childProcess = require('child_process')
 // configuration files
 var configServer = require('./lib/config/server');
 
-var Galileo = require("galileo-io");
-var board = new Galileo();
+var m = require("mraa");
 
-board.on("ready", function() {
-  console.log("READY");
-  this.pinMode(3, this.MODES.SERVO);
-  this.pinMode(4,this.MODES.OUTPUT);
-  this.pinMode(5,this.MODES.PWM);
-  this.pinMode(6,this.MODES.PWM);
-  this.pinMode(7,this.MODES.OUTPUT);
-  this.servoWrite(3, 70);
-});
+console.log("READY");
+var dirPinLeft = new m.Gpio(4);
+var dirPinRight = new m.Gpio(7);
+var pwmPinLeft = new m.Pwm(5);
+var pwmPinRight = new m.Pwm(6);
+var pwmPinServo = new m.Pwm(3);
+pwmPinLeft.enable(true);
+pwmPinRight.enable(true);
+pwmPinServo.enable(true);
+dirPinLeft.dir(m.DIR_OUT);
+dirPinRight.dir(m.DIR_OUT); 
 function runSpeed(leftSpeed,rightSpeed){
-  board.digitalWrite(4,leftSpeed>0?0:1);
-  board.analogWrite(5,leftSpeed<0?-leftSpeed:leftSpeed);
-  board.digitalWrite(7,rightSpeed>0?0:1);
-  board.analogWrite(6,rightSpeed<0?-rightSpeed:rightSpeed);
+  dirPinLeft.write(leftSpeed>0?0:1);
+  pwmPinLeft.write((leftSpeed<0?-leftSpeed:leftSpeed)/255.0);
+  dirPinRight.write(rightSpeed>0?0:1);
+  pwmPinRight.write((rightSpeed<0?-rightSpeed:rightSpeed)/255.0);
 }
 function forward(){
   runSpeed(-100,-100);
@@ -41,8 +42,8 @@ function doStop(){
   runSpeed(0,0);
 };
 function runServo(angle){
-  angle = 70-Math.floor(angle/1.5);
-  board.servoWrite(3, angle);
+  angle = 110-Math.floor(angle);
+  pwmPinServo.write(angle/512);
 };
 var app = express();
 app.set('port', configServer.httpPort);
