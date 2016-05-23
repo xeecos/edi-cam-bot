@@ -106,13 +106,13 @@ body {
 		function pressRobot(index){
 			var data = "";
 			if(index==0){
-				data = "0&rightspeed=-100&leftspeed=-100";
+				data = "0&rightspeed=100&leftspeed=-100";
 			}else if(index==1){
-				data = "1&rightspeed=150&leftspeed=-150";
+				data = "1&rightspeed=-150&leftspeed=-150";
 			}else if(index==2){
-				data = "2&rightspeed=-150&leftspeed=150";
+				data = "2&rightspeed=150&leftspeed=150";
 			}else if(index==3){
-				data = "3&rightspeed=100&leftspeed=100";
+				data = "3&rightspeed=-100&leftspeed=100";
 			}
 			sendAction("press",data);
 		};
@@ -132,8 +132,8 @@ body {
 </head>
 <body onload="doOnLoad();" onunload="doOnUnload();">
 <div id="center" style="width:900px;">
-	<div id="center" style="width:640px;height:480px;border:1px solid #ccc">
-		<canvas id="canvas-video" width="640" height="480"></canvas>
+	<div id="center" style="width:320px;height:240px;border:1px solid #ccc">
+		<canvas id="canvas-video" width="320" height="240"></canvas>
 	</div>
 	<script src="/jsmpg.js"></script>
 	<script type="text/javascript">

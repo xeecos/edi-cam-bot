@@ -7,43 +7,39 @@ var childProcess = require('child_process')
 // configuration files
 var configServer = require('./lib/config/server');
 
-var m = require("mraa");
+var SerialPort = require("serialport").SerialPort;  
+var serial; 
 
 console.log("READY");
-var dirPinLeft = new m.Gpio(4);
-var dirPinRight = new m.Gpio(7);
-var pwmPinLeft = new m.Pwm(5);
-var pwmPinRight = new m.Pwm(6);
-var pwmPinServo = new m.Pwm(3);
-pwmPinLeft.enable(true);
-pwmPinRight.enable(true);
-pwmPinServo.enable(true);
-dirPinLeft.dir(m.DIR_OUT);
-dirPinRight.dir(m.DIR_OUT); 
+function bytesFromShort(v){
+    var buf = new Buffer(2);
+    buf.writeInt16LE(v,0);
+    return [buf[0],buf[1]];
+}
 function runSpeed(leftSpeed,rightSpeed){
-  dirPinLeft.write(leftSpeed>0?0:1);
-  pwmPinLeft.write((leftSpeed<0?-leftSpeed:leftSpeed)/255.0);
-  dirPinRight.write(rightSpeed>0?0:1);
-  pwmPinRight.write((rightSpeed<0?-rightSpeed:rightSpeed)/255.0);
+    if(serial){
+        var buffer = [0xff,0x55,8,0,2,5].concat(bytesFromShort(leftSpeed).concat(bytesFromShort(rightSpeed)).concat([0xa]));
+        serial.write(buffer);
+    }
 }
 function forward(){
-  runSpeed(-100,-100);
+  runSpeed(-100,100);
 };
 function backward(){
-  runSpeed(100,100);
-};
-function turnleft(){
   runSpeed(100,-100);
 };
+function turnleft(){
+  runSpeed(100,100);
+};
 function turnright(){
-  runSpeed(-100,100);
+  runSpeed(-100,-100);
 };
 function doStop(){
   runSpeed(0,0);
 };
 function runServo(angle){
   angle = 110-Math.floor(angle);
-  pwmPinServo.write(angle/512);
+  //pwmPinServo.write(angle/512);
 };
 var app = express();
 app.set('port', configServer.httpPort);
@@ -75,8 +71,8 @@ http.createServer(app).listen(app.get('port'), function () {
   console.log('HTTP server listening on port ' + app.get('port'));
 });
 var STREAM_MAGIC_BYTES = 'jsmp'; // Must be 4 bytes
-var width = 640;
-var height = 480;
+var width = 320;
+var height = 240;
 
 // WebSocket server
 var wsServer = new (ws.Server)({ port: configServer.wsPort });
@@ -110,23 +106,39 @@ wsServer.broadcast = function(data, opts) {
   }
 };
 function resetStream(){
-  childProcess.exec('~/edi-cam-bot/bin/do_ffmpeg.sh');
+  childProcess.exec('/home/root/edi-cam-bot/bin/do_ffmpeg.sh');
 };
 // HTTP server to accept incoming MPEG1 stream
-http.createServer(function (req, res) {
-  console.log(
-    'Stream Connected: ' + req.socket.remoteAddress +
-    ':' + req.socket.remotePort + ' size: ' + width + 'x' + height
-  );
+var port = "/dev/ttyMFD1";  
+setTimeout(function(){
+    serial = new SerialPort(port, {  
+        baudrate: 9600      
+    }, false); 
+    serial.open(function (error) {  
+      if (error) {  
+        console.log('Failed to open: '+error);  
+      } else {  
+        console.log('open');  
+        serial.on('data', function(data) {  
+          console.log('data received: ' + data);  
+            
+        });
+      }	
+    });
+    http.createServer(function (req, res) {
+      console.log(
+        'Stream Connected: ' + req.socket.remoteAddress +
+        ':' + req.socket.remotePort + ' size: ' + width + 'x' + height
+      );
 
-  req.on('data', function (data) {
-    wsServer.broadcast(data, { binary: true });
-  });
-}).listen(configServer.streamPort, function () {
-  console.log('Listening for video stream on port ' + configServer.streamPort);
+      req.on('data', function (data) {
+        wsServer.broadcast(data, { binary: true });
+      });
+    }).listen(configServer.streamPort, function () {
+      console.log('Listening for video stream on port ' + configServer.streamPort);
 
-  // Run do_ffmpeg.sh from node                                                   
-  childProcess.exec('~/edi-cam-bot/bin/do_ffmpeg.sh');
-});
-
+      // Run do_ffmpeg.sh from node                                                   
+      childProcess.exec('/home/root/edi-cam-bot/bin/do_ffmpeg.sh');
+    });
+},3000);
 module.exports.app = app;
