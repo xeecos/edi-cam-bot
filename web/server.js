@@ -9,7 +9,10 @@ var configServer = require('./lib/config/server');
 
 var SerialPort = require("serialport").SerialPort;  
 var serial; 
-
+var m = require('mraa'); //require mraa
+console.log('MRAA Version: ' + m.getVersion());
+var u = new m.Uart(0)
+u.setBaudRate(38400);
 console.log("READY");
 function bytesFromShort(v){
     var buf = new Buffer(2);
@@ -17,9 +20,9 @@ function bytesFromShort(v){
     return [buf[0],buf[1]];
 }
 function runSpeed(leftSpeed,rightSpeed){
-    if(serial){
-        var buffer = [0xff,0x55,8,0,2,5].concat(bytesFromShort(leftSpeed).concat(bytesFromShort(rightSpeed)).concat([0xa]));
-        serial.write(buffer);
+    if(u){
+        var buffer = new Buffer([0xff,0x55,8,0,2,5].concat(bytesFromShort(leftSpeed).concat(bytesFromShort(rightSpeed)).concat([0xa])));
+        u.write(buffer);
     }
 }
 function forward(){
@@ -111,9 +114,9 @@ function resetStream(){
 // HTTP server to accept incoming MPEG1 stream
 var port = "/dev/ttyMFD1";  
 setTimeout(function(){
-    serial = new SerialPort(port, {  
-        baudrate: 9600      
-    }, false); 
+   /* serial = new SerialPort(port, {  
+        baudrate: 38400      
+    }, true); 
     serial.open(function (error) {  
       if (error) {  
         console.log('Failed to open: '+error);  
@@ -124,7 +127,7 @@ setTimeout(function(){
             
         });
       }	
-    });
+    });*/
     http.createServer(function (req, res) {
       console.log(
         'Stream Connected: ' + req.socket.remoteAddress +
